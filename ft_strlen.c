@@ -6,11 +6,11 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 21:42:17 by inightin          #+#    #+#             */
-/*   Updated: 2022/01/06 03:24:47 by inightin         ###   ########.fr       */
+/*   Updated: 2022/01/29 17:38:39 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "includes/pipex.h"
 
 size_t	ft_strlen(const char *str)
 {

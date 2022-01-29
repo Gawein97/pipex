@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 04:01:31 by inightin          #+#    #+#             */
-/*   Updated: 2022/01/08 16:33:00 by inightin         ###   ########.fr       */
+/*   Updated: 2022/01/25 21:50:49 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int main(int argc, char *argv[], char *envp[])
 	char    **cmd1 = ft_split(argv[1], ' ');
     char    **cmd2 = ft_split(argv[2], ' ');
     int fd[2];
-	int file = open(argv[3], O_WRONLY | O_CREAT, 0777);
+	int file = open(argv[3], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (file == -1)
 	{
 		printf("Cannot open file\n");
@@ -108,24 +108,13 @@ int main(int argc, char *argv[], char *envp[])
         // Child process 1 for (ping) command
 		cmd_p = cmd_path(whereis, cmd1[0], envp);
 		cmd_p[ft_strlen(cmd_p) - 1] = '\0';
-		printf("%s", cmd_p);
         dup2(fd[1], STDOUT_FILENO);
         close(fd[1]);
         close(fd[0]);
         execve(cmd_p, cmd1, envp);
+		write(2, "e\n", 2);
+		exit(1);
     }
-	int wstatus;
-	waitpid(pid1, &wstatus, 0);
-	if (WIFEXITED(wstatus))
-	{
-		if (WEXITSTATUS(wstatus) != 0)
-		{
-			perror("Canot execute command\n");
-			return (1);
-		}
-	}
-	else
-		return (1);
     int pid2 = fork();
     if (pid2 < 0)
         return (3);
@@ -134,16 +123,26 @@ int main(int argc, char *argv[], char *envp[])
         // Child process 2 for (grep) command
 		cmd_p = cmd_path(whereis, cmd2[0], envp);
 		cmd_p[ft_strlen(cmd_p) - 1] = '\0';
-		printf("%s", cmd_p);
         dup2(fd[0], STDIN_FILENO);
 		dup2(file, STDOUT_FILENO);
         close(fd[1]);
         close(fd[0]);
         execve(cmd_p, cmd2, envp);
     }
-    close(fd[0]);
-    close(fd[1]);
+	//int wstatus;
+	// waitpid(pid2, &wstatus, 0);
+	// if (WIFEXITED(wstatus))
+	// {
+	// 	if (WEXITSTATUS(wstatus) != 0)
+	// 	{
+	// 		perror("Cannot execute command");
+	// 		return (1);
+	// 	}
+	// }
+	// else
+	// 	return (1);
+	close(fd[0]);
+	close(fd[1]);
 	close(file);
-    waitpid(pid2, NULL, 0);
 	return (0);
 }

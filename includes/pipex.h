@@ -1,38 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr.c                                        :+:      :+:    :+:   */
+/*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/05 16:49:26 by inightin          #+#    #+#             */
-/*   Updated: 2022/01/29 17:38:45 by inightin         ###   ########.fr       */
+/*   Created: 2022/01/29 17:16:41 by inightin          #+#    #+#             */
+/*   Updated: 2022/01/29 21:13:52 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/pipex.h"
+#ifndef PIPEX_H
+# define PIPEX_H
+# include <unistd.h>
+# include <sys/wait.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include <stdio.h>
 
-static int	ft_compare(char *str, char *to_find)
-{
-	while (*str && *to_find)
-	{
-		if (*str != *to_find)
-			return (0);
-		str++;
-		to_find++;
-	}
-	return (*to_find == '\0');
-}
-
-char	*ft_strstr(char *str, char *to_find)
-{
-	while (*str != '\0')
-	{
-		if ((*str == *to_find) && ft_compare(str, to_find))
-		{
-			return (str);
-		}
-		str++;
-	}
-	return (NULL);
-}
+char	**ft_split(char const *s, char c);
+size_t	ft_strlen(const char *str);
+char	*ft_strstr(char *str, char *to_find);
+char	*ft_strjoin(char const *s1, char const *s2);
+char	**get_possible_paths(char **envp);
+char	*get_cmd_path(char **p_paths, char *cmd);
+#endif

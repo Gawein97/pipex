@@ -6,11 +6,11 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/07 20:43:06 by inightin          #+#    #+#             */
-/*   Updated: 2022/01/06 03:16:51 by inightin         ###   ########.fr       */
+/*   Updated: 2022/01/29 17:38:31 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "includes/pipex.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {

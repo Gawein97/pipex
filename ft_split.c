@@ -6,11 +6,11 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 01:30:05 by inightin          #+#    #+#             */
-/*   Updated: 2022/01/06 01:02:43 by inightin         ###   ########.fr       */
+/*   Updated: 2022/01/29 17:38:21 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "includes/pipex.h"
 
 static size_t	ft_w_count(char const *s, char c)
 {
