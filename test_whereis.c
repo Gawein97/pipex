@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 04:01:31 by inightin          #+#    #+#             */
-/*   Updated: 2022/01/25 21:50:49 by inightin         ###   ########.fr       */
+/*   Updated: 2022/01/30 22:14:02 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ int main(int argc, char *argv[], char *envp[])
         close(fd[1]);
         close(fd[0]);
         execve(cmd_p, cmd1, envp);
-		write(2, "e\n", 2);
 		exit(1);
     }
     int pid2 = fork();
@@ -128,6 +127,7 @@ int main(int argc, char *argv[], char *envp[])
         close(fd[1]);
         close(fd[0]);
         execve(cmd_p, cmd2, envp);
+		exit(1);
     }
 	//int wstatus;
 	// waitpid(pid2, &wstatus, 0);

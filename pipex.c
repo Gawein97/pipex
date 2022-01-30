@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 19:59:20 by inightin          #+#    #+#             */
-/*   Updated: 2022/01/29 21:41:13 by inightin         ###   ########.fr       */
+/*   Updated: 2022/01/30 22:20:42 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,17 @@
 char	**get_possible_paths(char **envp)
 {
 	char	**paths;
+	int		i;
 
-	while (*envp != NULL)
+	i = 0;
+	while (envp[i] != NULL)
 	{
-		if (ft_strstr(*envp, "PATH"))
+		if (ft_strstr(envp[i], "PATH"))
 		{
-			paths = ft_split(*envp + 5, ':');
+			paths = ft_split(envp[i] + 5, ':');
 			return (paths);
 		}
-		envp++;
+		i++;
 	}
 	return (NULL);
 }
@@ -58,6 +60,7 @@ void free_arrays(char **arr)
 		free(arr[i]);
 		i++;
 	}
+	free(arr);
 	return ;
 }
 
@@ -102,16 +105,17 @@ int main(int argc, char *argv[], char *envp[])
 	if (cmd1_v == NULL | cmd2_v == NULL)
 	{
 		write(2, "Allocation fail\n", 17);
+		free_arrays(p_paths);
 		exit(1);
 	}
-	cmd_paths[0] = get_cmd_path(p_paths, cmd1_v[0]);
-	cmd_paths[1] = get_cmd_path(p_paths, cmd2_v[0]);
+	//cmd_paths[0] = get_cmd_path(p_paths, cmd1_v[0]);
+	//cmd_paths[1] = get_cmd_path(p_paths, cmd2_v[0]);
 	//printf("%s\n %s\n", cmd_paths[0], cmd_paths[1]);
-	if (!cmd_paths[0] | !cmd_paths[1])
-	{
-		perror("Command fails:");
-		exit(1);
-	}
+	// if (!cmd_paths[0] | !cmd_paths[1])
+	// {
+	// 	perror("Command fails:");
+	// 	exit(1);
+	// }
 	if (pipe(fd) == -1)
     {
 		perror("Pipe fail:");
@@ -121,46 +125,73 @@ int main(int argc, char *argv[], char *envp[])
 	if (pid1 < 0)
 	{
 		perror("Process fail:");
+		free_arrays(p_paths);
+		free_arrays(cmd1_v);
+		free_arrays(cmd2_v);
 		exit(1);
 	}
 	if (pid1 == 0)
 	{
 		// Child process for 1 command
-		dup2(infile, STDIN_FILENO);
+		cmd_paths[0] = get_cmd_path(p_paths, cmd1_v[0]);
+		if (!cmd_paths[0])
+		{
+			write(2, "Command execution fail cmd1\n", 29);
+			free(cmd_paths[0]);
+			free_arrays(p_paths);
+			free_arrays(cmd1_v);
+			exit(1);
+		}
 		dup2(fd[1], STDOUT_FILENO);
-        close(fd[1]);
         close(fd[0]);
+		close(fd[1]);
+		dup2(infile, STDIN_FILENO);
         execve(cmd_paths[0], cmd1_v, envp);
-		perror("Comand execution fail:");
+		free(cmd_paths[0]);
+		free_arrays(p_paths);
+		free_arrays(cmd1_v);
+		perror("Comand execution fail");
 		exit(1);
 	}
 	pid2 = fork();
 	if (pid2 < 0)
 	{
-		perror("Process fail:");
+		perror("Process fail");
 		exit(1);
 	}
 	if (pid2 == 0)
     {
         // Child process for second command
+		cmd_paths[1] = get_cmd_path(p_paths, cmd2_v[0]);
+		if (!cmd_paths[1])
+		{
+			write(2, "Command execution fail cmd2\n", 29);
+			free(cmd_paths[1]);
+			free_arrays(p_paths);
+			free_arrays(cmd2_v);
+			exit(1);
+		}
         dup2(fd[0], STDIN_FILENO);
 		dup2(outfile, STDOUT_FILENO);
-        close(fd[1]);
         close(fd[0]);
+		close(fd[1]);
         execve(cmd_paths[1], cmd2_v, envp);
-		perror("Comand execution fail:");
+		free(cmd_paths[1]);
+		free_arrays(p_paths);
+		free_arrays(cmd1_v);
+		perror("Comand execution fail");
 		exit(1);
     }
-	close(fd[0]);
-	close(fd[1]);
 	close(outfile);
 	close(infile);
-	waitpid(pid2, NULL, 0);
-	waitpid(pid1, NULL, 0);
+	close(fd[0]);
+	close(fd[1]);
 	free_arrays(p_paths);
 	free_arrays(cmd1_v);
 	free_arrays(cmd2_v);
 	free(cmd_paths[0]);
 	free(cmd_paths[1]);
+	waitpid(pid2, NULL, 0);
+	waitpid(pid1, NULL, 0);
 	return (0);
 }

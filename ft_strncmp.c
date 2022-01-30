@@ -1,38 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr.c                                        :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/05 16:49:26 by inightin          #+#    #+#             */
-/*   Updated: 2022/01/30 21:44:46 by inightin         ###   ########.fr       */
+/*   Created: 2021/10/05 19:52:38 by inightin          #+#    #+#             */
+/*   Updated: 2022/01/30 21:54:37 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/pipex.h"
 
-static int	ft_compare(char *str, char *to_find)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	while (*str && *to_find)
-	{
-		if (*str != *to_find)
-			return (0);
-		str++;
-		to_find++;
-	}
-	return (*to_find == '\0');
-}
+	size_t	i;
 
-char	*ft_strstr(char *str, char *to_find)
-{
-	while (*str != '\0')
+	i = 0;
+	while ((s1[i] || s2[i]) && i < n)
 	{
-		if ((*str == *to_find) && ft_compare(str, to_find))
-		{
-			return (str);
-		}
-		str++;
+		if ((unsigned char)s1[i] != (unsigned char)s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
 	}
-	return (NULL);
+	return (0);
 }
