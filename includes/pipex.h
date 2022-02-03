@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 17:16:41 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/03 22:27:40 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/04 00:23:41 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,6 @@ char	*get_cmd_path(char **p_paths, char *cmd);
 char	*ft_strstr(char *str, char *to_find);
 char	**get_possible_paths(char **envp);
 char	*get_cmd_path(char **p_paths, char *cmd);
+void	ft_first_child_process(t_pipeline pipeline, char *argv[], char *envp[]);
+void	ft_second_child_process(t_pipeline pipeline, char *argv[], char *envp[]);
 #endif
