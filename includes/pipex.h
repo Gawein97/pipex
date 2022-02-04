@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 17:16:41 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/04 00:23:41 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/04 03:26:02 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@
 
 typedef struct s_pipeline {
 	char	**p_paths;
-	char	*cmd_paths[2];
-	char	**cmd1_v;
-	char	**cmd2_v;
+	char	*cmd_path;
+	char	**cmd_v;
 	pid_t	pid1;
 	pid_t	pid2;
 	int		read_file;
@@ -40,6 +39,8 @@ char	*get_cmd_path(char **p_paths, char *cmd);
 char	*ft_strstr(char *str, char *to_find);
 char	**get_possible_paths(char **envp);
 char	*get_cmd_path(char **p_paths, char *cmd);
-void	ft_first_child_process(t_pipeline pipeline, char *argv[], char *envp[]);
-void	ft_second_child_process(t_pipeline pipeline, char *argv[], char *envp[]);
+void	ft_child_process(t_pipeline pipeline, char *argv, char *envp[],
+			char flag);
+void	free_cmd_pipeline(t_pipeline *pipeline);
+void	error_exit(char *msg, char c);
 #endif

@@ -13,29 +13,27 @@ MPATH_SRCS	=	pipex.c ft_strjoin.c ft_strstr.c ft_strlen.c ft_split.c \
 				ft_paths.c
 OBJ_M		=	$(MPATH_SRCS:.c=.o)
 
-
+.PHONY:		all clean fclean bonus re
 #COMMANDS
 %.o: %.c $(HEADER) Makefile
-				@${CC} ${FLAGS} -c $< -o $@
+				${CC} ${FLAGS} -c $< -o $@
 
 $(NAME):		$(OBJ_M)
-				@$(CC) $(OBJ_M) -o $(NAME)
+				$(CC) $(OBJ_M) -o $(NAME)
 				@echo -e "$(GREEN)$(NAME) created!$(DEFAULT)"
 
 all:			$(NAME)
 
 
 clean:
-				@$(RM) $(OBJ_M)
+				$(RM) $(OBJ_M)
 				@echo -e "$(YELLOW)object files deleted!$(DEFAULT)"
 
 fclean:			clean
-				@$(RM) $(NAME)
+				$(RM) $(NAME)
 				@echo -e "$(RED)all deleted!$(DEFAULT)"
 
 re:				fclean all
-
-.PHONY:		all clean fclean bonus re
 
 #COLORS
 RED = \033[1;31m
