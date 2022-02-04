@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 17:16:41 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/04 03:26:02 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/04 03:57:41 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,6 @@ void	ft_child_process(t_pipeline pipeline, char *argv, char *envp[],
 			char flag);
 void	free_cmd_pipeline(t_pipeline *pipeline);
 void	error_exit(char *msg, char c);
+void	free_arrays(char **arr);
+void	fd_pipeline_close(t_pipeline *pipeline);
 #endif
