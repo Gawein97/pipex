@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 19:59:20 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/04 23:47:45 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/05 14:10:35 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,45 +52,56 @@ static void	error_exit_fork(char **ptr)
 	error_exit("Fork fail", 'p');
 	return ;
 }
-
+#include <stdio.h>
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipeline	pipeline;
 	pid_t		pids[argc - 3];
 	int			i;
 	int			curr_pipe;
-	int			cmd;
-
-	i = 1;
+	int			pid_indx;
+	i = 3;
 	curr_pipe = 0;
-	cmd = 2;
+	pid_indx = 0;
+	pipeline.fd[0][0] = -1;
+	pipeline.fd[0][1] = -1;
+	pipeline.fd[1][0] = -1;
+	pipeline.fd[1][1] = -1;
 	file_validation(argc, argv, &pipeline);
 	pipeline.p_paths = get_possible_paths(envp);
 	if (!pipeline.p_paths)
 		error_exit("Cannot get env PATH\n", 'w');
-	if (pipe(pipeline.fd[curr_pipe]) == -1)
-		error_exit("Pipe fail", 'p');
-	while (i < argc - 2)
+	while (i < argc)
 	{
 		if (pipe(pipeline.fd[curr_pipe]) < 0)
 			error_exit("Pipe fail", 'p');
-		pids[i - 1] = fork();
-		if (pids[i - 1] < 0)
+		pids[pid_indx] = fork();
+		if (pids[pid_indx] < 0)
 			error_exit_fork(pipeline.p_paths);
-		if (pids[i - 1] == 0)
+		if (pids[pid_indx] == 0)
 		{
-			if (i > 1)
+			if (i == 3) //first command
+			{
+				dup2(pipeline.read_file, STDIN_FILENO);
+				close(pipeline.read_file);
+			}
+			if (i > 3)
 			{
 				dup2(pipeline.fd[1 - curr_pipe][0], STDIN_FILENO);
 				close(pipeline.fd[1 - curr_pipe][0]);
 			}
-			if (i < argc - 2)
+			if (i < (argc - 1))
 			{
 				dup2(pipeline.fd[curr_pipe][1], STDOUT_FILENO);
 				close(pipeline.fd[curr_pipe][0]);
 				close(pipeline.fd[curr_pipe][1]);
 			}
-			pipeline.cmd_v = ft_split(argv[cmd], ' ');
+			if ( i == (argc - 1))
+			{
+				dup2(pipeline.write_file, STDOUT_FILENO);
+				close(pipeline.write_file);
+			}
+			pipeline.cmd_v = ft_split(argv[i - 1], ' ');
 			if (!pipeline.cmd_v)
 			{
 				free_arrays(pipeline.cmd_v);
@@ -104,13 +115,14 @@ int	main(int argc, char *argv[], char *envp[])
 				error_exit("Command exec fail", 'p');
 			}
 			execve(pipeline.cmd_path, pipeline.cmd_v, envp);
-			//ft_child_process(pipeline, argv[cmd], envp);
+			free_cmd_pipeline(&pipeline);
+			error_exit("Command exec fail", 'p');
 		}
 		close(pipeline.fd[1 - curr_pipe][0]);
 		close(pipeline.fd[curr_pipe][1]);
 		curr_pipe = 1 - curr_pipe;
 		i++;
-		cmd++;
+		pid_indx++;
 	}
 	// if (pipe(pipeline.fd) == -1)
 	// 	error_exit("Pipe fail", 'p');
@@ -124,10 +136,11 @@ int	main(int argc, char *argv[], char *envp[])
 	// 	error_exit_fork(pipeline.p_paths);
 	// if (pipeline.pid2 == 0)
 	// 	ft_child_process(pipeline, argv[3], envp);
+	close(pipeline.read_file);
+	close(pipeline.write_file);
 	close(pipeline.fd[1 - curr_pipe][0]);
-	while (i--)
-		waitpid(pids[i - 2], 0, 0);
-	fd_pipeline_close(&pipeline);
+	while (pid_indx--)
+		waitpid(pids[pid_indx], 0, 0);
 	free_arrays(pipeline.p_paths);
 	return (0);
 }
