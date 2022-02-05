@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 19:59:20 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/05 17:48:54 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/05 19:59:17 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ static void	ft_execute_cmd(t_pipeline pipeline, char *argv, char *envp[])
 
 static void	file_validation(int argc, char *argv[], t_pipeline *pipeline)
 {
+	if (argc < 5)
+		error_exit("Incorrect number of arguments, expected at least 4\n", 'w');
 	pipeline->read_file = open(argv[1], O_RDONLY);
 	if (pipeline->read_file < 0)
 		error_exit("Cannot read file", 'p');

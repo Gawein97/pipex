@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 17:16:41 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/05 17:48:46 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/05 19:59:14 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_pipeline {
 	int		curr_pipe;
 	int		pid_indx;
 	int		*pids;
+	int		here_doc;
 }t_pipeline;
 
 char	**ft_split(char const *s, char c);

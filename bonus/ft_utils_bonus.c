@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/04 03:45:29 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/05 17:48:40 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/05 19:59:19 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	ft_init_pipeline(t_pipeline *pipeline)
 {
 	pipeline->curr_pipe = 0;
 	pipeline->pid_indx = 0;
+	pipeline->here_doc = 0;
 	pipeline->fd[0][0] = -1;
 	pipeline->fd[0][1] = -1;
 	pipeline->fd[1][0] = -1;
