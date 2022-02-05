@@ -6,12 +6,12 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 17:16:41 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/05 15:40:48 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/05 17:48:46 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 # include <unistd.h>
 # include <sys/wait.h>
 # include <sys/types.h>
@@ -26,6 +26,9 @@ typedef struct s_pipeline {
 	int		read_file;
 	int		write_file;
 	int		fd[2][2];
+	int		curr_pipe;
+	int		pid_indx;
+	int		*pids;
 }t_pipeline;
 
 char	**ft_split(char const *s, char c);
@@ -41,4 +44,7 @@ void	free_cmd_pipeline(t_pipeline *pipeline);
 void	error_exit(char *msg, char c);
 void	free_arrays(char **arr);
 void	fd_pipeline_close(t_pipeline *pipeline);
+void	error_exit_fork(char **ptr);
+void	ft_init_pipeline(t_pipeline *pipeline);
+void	dup2_with_close(int fd1, int fd2);
 #endif

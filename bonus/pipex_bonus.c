@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 19:59:20 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/05 15:46:21 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/05 17:48:54 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static void	ft_execute_cmd(t_pipeline pipeline, char *argv, char *envp[])
 	{
 		free_arrays(pipeline.cmd_v);
 		free_arrays(pipeline.p_paths);
+		free(pipeline.pids);
 		error_exit("Mem alloc fail\n", 'w');
 	}
 	pipeline.cmd_path = get_cmd_path(pipeline.p_paths, pipeline.cmd_v[0]);
@@ -32,17 +33,8 @@ static void	ft_execute_cmd(t_pipeline pipeline, char *argv, char *envp[])
 	error_exit("Command exec fail", 'p');
 }
 
-static void	dup2_with_close(int fd1, int fd2)
-{
-	dup2(fd1, fd2);
-	close(fd1);
-	return ;
-}
-
 static void	file_validation(int argc, char *argv[], t_pipeline *pipeline)
 {
-	// if (argc != 5)
-	// 	error_exit("Incorrect number of arguments, expected 4\n", 'w');
 	pipeline->read_file = open(argv[1], O_RDONLY);
 	if (pipeline->read_file < 0)
 		error_exit("Cannot read file", 'p');
@@ -53,74 +45,71 @@ static void	file_validation(int argc, char *argv[], t_pipeline *pipeline)
 	return ;
 }
 
-static void	error_exit_fork(char **ptr)
+static void	ft_descriptors_swap(t_pipeline pipeline, int i, int argc,
+				int curr_pipe)
 {
-	free_arrays(ptr);
-	error_exit("Fork fail", 'p');
+	if (i == 3)
+		dup2_with_close(pipeline.read_file, STDIN_FILENO);
+	if (i > 3)
+		dup2_with_close(pipeline.fd[1 - curr_pipe][0], STDIN_FILENO);
+	if (i < (argc - 1))
+	{
+		dup2(pipeline.fd[curr_pipe][1], STDOUT_FILENO);
+		close(pipeline.fd[curr_pipe][0]);
+		close(pipeline.fd[curr_pipe][1]);
+	}
+	if (i == (argc - 1))
+		dup2_with_close(pipeline.write_file, STDOUT_FILENO);
+	return ;
+}
+
+void	ft_multiple_cmds(t_pipeline *pipeline, int argc, char *argv[],
+			char *envp[])
+{
+	int	i;
+
+	i = 3;
+	while (i < argc)
+	{
+		if (pipe(pipeline->fd[pipeline->curr_pipe]) < 0)
+			error_exit("Pipe fail", 'p');
+		pipeline->pids[pipeline->pid_indx] = fork();
+		if (pipeline->pids[pipeline->pid_indx] < 0)
+			error_exit_fork(pipeline->p_paths);
+		if (pipeline->pids[pipeline->pid_indx] == 0)
+		{
+			ft_descriptors_swap(*pipeline, i, argc, pipeline->curr_pipe);
+			ft_execute_cmd(*pipeline, argv[i - 1], envp);
+		}
+		close(pipeline->fd[1 - pipeline->curr_pipe][0]);
+		close(pipeline->fd[pipeline->curr_pipe][1]);
+		pipeline->curr_pipe = 1 - pipeline->curr_pipe;
+		i++;
+		pipeline->pid_indx++;
+	}
 	return ;
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipeline	pipeline;
-	pid_t		pids[argc - 3];
 	int			i;
-	int			curr_pipe;
-	int			pid_indx;
 
 	i = 3;
-	curr_pipe = 0;
-	pid_indx = 0;
-	pipeline.fd[0][0] = -1;
-	pipeline.fd[0][1] = -1;
-	pipeline.fd[1][0] = -1;
-	pipeline.fd[1][1] = -1;
+	pipeline.pids = (pid_t *)malloc(sizeof(pid_t) * (argc - 3));
+	if (!pipeline.pids)
+		error_exit("Mem alloc fail\n", 'w');
+	ft_init_pipeline(&pipeline);
 	file_validation(argc, argv, &pipeline);
 	pipeline.p_paths = get_possible_paths(envp);
 	if (!pipeline.p_paths)
 		error_exit("Cannot get env PATH\n", 'w');
-	while (i < argc)
-	{
-		if (pipe(pipeline.fd[curr_pipe]) < 0)
-			error_exit("Pipe fail", 'p');
-		pids[pid_indx] = fork();
-		if (pids[pid_indx] < 0)
-			error_exit_fork(pipeline.p_paths);
-		if (pids[pid_indx] == 0)
-		{
-			if (i == 3)
-			{
-				dup2(pipeline.read_file, STDIN_FILENO);
-				close(pipeline.read_file);
-			}
-			if (i > 3)
-			{
-				dup2(pipeline.fd[1 - curr_pipe][0], STDIN_FILENO);
-				close(pipeline.fd[1 - curr_pipe][0]);
-			}
-			if (i < (argc - 1))
-			{
-				dup2(pipeline.fd[curr_pipe][1], STDOUT_FILENO);
-				close(pipeline.fd[curr_pipe][0]);
-				close(pipeline.fd[curr_pipe][1]);
-			}
-			if ( i == (argc - 1))
-			{
-				dup2(pipeline.write_file, STDOUT_FILENO);
-				close(pipeline.write_file);
-			}
-			ft_execute_cmd(pipeline, argv[i - 1], envp);
-		}
-		close(pipeline.fd[1 - curr_pipe][0]);
-		close(pipeline.fd[curr_pipe][1]);
-		curr_pipe = 1 - curr_pipe;
-		i++;
-		pid_indx++;
-	}
+	ft_multiple_cmds(&pipeline, argc, argv, envp);
 	fd_pipeline_close(&pipeline);
-	close(pipeline.fd[1 - curr_pipe][0]);
-	while (pid_indx--)
-		waitpid(pids[pid_indx], 0, 0);
+	close(pipeline.fd[1 - pipeline.curr_pipe][0]);
+	while (pipeline.pid_indx--)
+		waitpid(pipeline.pids[pipeline.pid_indx], 0, 0);
 	free_arrays(pipeline.p_paths);
+	free(pipeline.pids);
 	return (0);
 }

@@ -15,7 +15,7 @@ MPATH_SRCS	=	pipex.c ft_strjoin.c ft_strstr.c ft_strlen.c ft_split.c \
 OBJ_M		=	$(MPATH_SRCS:.c=.o)
 
 BPATH_SRCS	=	pipex_bonus.c ft_strjoin_bonus.c ft_strstr_bonus.c ft_strlen_bonus.c ft_split_bonus.c \
-				ft_paths_bonus.c ft_utils_bonus.c
+				ft_paths_bonus.c ft_utils_bonus.c ft_errors.c
 
 B_PATH_DIR	=	bonus/
 B_PATH		=	$(addprefix $(B_PATH_DIR), $(BPATH_SRCS))
