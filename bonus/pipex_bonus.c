@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 19:59:20 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/05 19:59:17 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/06 19:33:21 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,22 @@ static void	file_validation(int argc, char *argv[], t_pipeline *pipeline)
 {
 	if (argc < 5)
 		error_exit("Incorrect number of arguments, expected at least 4\n", 'w');
-	pipeline->read_file = open(argv[1], O_RDONLY);
-	if (pipeline->read_file < 0)
-		error_exit("Cannot read file", 'p');
-	pipeline->write_file = open(argv[argc - 1],
-			O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (!ft_strncmp(argv[1], "here_doc", 9))
+		pipeline->here_doc = 1;
+	if (pipeline->here_doc)
+	{
+		ft_here_doc(pipeline, argv[2]);
+		pipeline->write_file = open(argv[argc - 1],
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+	}
+	else
+	{
+		pipeline->read_file = open(argv[1], O_RDONLY);
+		if (pipeline->read_file < 0)
+			error_exit("Cannot read file", 'p');
+		pipeline->write_file = open(argv[argc - 1],
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	}
 	if (pipeline->write_file < 0)
 		error_exit("Cannot create or open file", 'p');
 	return ;
@@ -50,9 +61,15 @@ static void	file_validation(int argc, char *argv[], t_pipeline *pipeline)
 static void	ft_descriptors_swap(t_pipeline pipeline, int i, int argc,
 				int curr_pipe)
 {
-	if (i == 3)
+	int	cmd_index;
+
+	if (pipeline.here_doc)
+		cmd_index = 4;
+	else
+		cmd_index = 3;
+	if (i == cmd_index)
 		dup2_with_close(pipeline.read_file, STDIN_FILENO);
-	if (i > 3)
+	if (i > cmd_index)
 		dup2_with_close(pipeline.fd[1 - curr_pipe][0], STDIN_FILENO);
 	if (i < (argc - 1))
 	{
@@ -70,7 +87,10 @@ void	ft_multiple_cmds(t_pipeline *pipeline, int argc, char *argv[],
 {
 	int	i;
 
-	i = 3;
+	if (pipeline->here_doc)
+		i = 4;
+	else
+		i = 3;
 	while (i < argc)
 	{
 		if (pipe(pipeline->fd[pipeline->curr_pipe]) < 0)
@@ -95,9 +115,7 @@ void	ft_multiple_cmds(t_pipeline *pipeline, int argc, char *argv[],
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipeline	pipeline;
-	int			i;
 
-	i = 3;
 	pipeline.pids = (pid_t *)malloc(sizeof(pid_t) * (argc - 3));
 	if (!pipeline.pids)
 		error_exit("Mem alloc fail\n", 'w');

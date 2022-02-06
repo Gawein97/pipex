@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/04 03:45:29 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/05 19:59:19 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/06 19:45:53 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	fd_pipeline_close(t_pipeline *pipeline)
 {
 	close(pipeline->write_file);
 	close(pipeline->read_file);
+	if (pipeline->here_doc)
+		unlink(".here_doc");
 	return ;
 }
 

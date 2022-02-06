@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 17:16:41 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/05 19:59:14 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/06 19:26:28 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,13 @@ void	fd_pipeline_close(t_pipeline *pipeline);
 void	error_exit_fork(char **ptr);
 void	ft_init_pipeline(t_pipeline *pipeline);
 void	dup2_with_close(int fd1, int fd2);
+void	ft_here_doc(t_pipeline *pipeline, char *argv);
+char	*ft_strchr(const char *s, int c);
+char	*ft_strdup(const char *src);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_save_buffer(int fd, char *save, char *buf);
+char	*ft_st_save(char *save);
+char	*ft_extract(char *save);
+char	*get_next_line(int fd);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
 #endif

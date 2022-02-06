@@ -15,7 +15,8 @@ OBJ_F		=	$(FUNC_SCRS:.c=.o)
 MPATH_SRCS	=	pipex.c ft_utils.c
 OBJ_M		=	$(MPATH_SRCS:.c=.o)
 
-BPATH_SRCS	=	pipex_bonus.c ft_utils_bonus.c ft_errors.c
+BPATH_SRCS	=	pipex_bonus.c ft_utils_bonus.c ft_errors.c here_doc.c get_next_line.c \
+				get_next_line_utils.c ft_strncmp.c
 
 B_PATH_DIR	=	bonus/
 B_PATH		=	$(addprefix $(B_PATH_DIR), $(BPATH_SRCS))
