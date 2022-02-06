@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 19:59:20 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/06 19:33:21 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/06 19:52:42 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,14 @@ static void	ft_execute_cmd(t_pipeline pipeline, char *argv, char *envp[])
 	pipeline.cmd_path = get_cmd_path(pipeline.p_paths, pipeline.cmd_v[0]);
 	if (!pipeline.cmd_path)
 	{
+		write(2, pipeline.cmd_v[0], ft_strlen(pipeline.cmd_v[0]));
 		free_cmd_pipeline(&pipeline);
-		error_exit("Command exec fail", 'p');
+		error_exit(" - Command exec fail", 'p');
 	}
 	execve(pipeline.cmd_path, pipeline.cmd_v, envp);
+	write(2, pipeline.cmd_v[0], ft_strlen(pipeline.cmd_v[0]));
 	free_cmd_pipeline(&pipeline);
-	error_exit("Command exec fail", 'p');
+	error_exit(" - Command exec fail", 'p');
 }
 
 static void	file_validation(int argc, char *argv[], t_pipeline *pipeline)

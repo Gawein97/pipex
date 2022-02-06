@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 19:59:20 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/05 15:09:55 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/06 19:55:16 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,9 @@ void	ft_child_process(t_pipeline pipeline, char *argv, char *envp[],
 	pipeline.cmd_path = get_cmd_path(pipeline.p_paths, pipeline.cmd_v[0]);
 	if (!pipeline.cmd_path)
 	{
+		write(2, pipeline.cmd_v[0], ft_strlen(pipeline.cmd_v[0]));
 		free_cmd_pipeline(&pipeline);
-		error_exit("Command exec fail", 'p');
+		error_exit(" - Command exec fail", 'p');
 	}
 	if (flag == 0)
 		ft_i_hate_norm_dup(pipeline.read_file, pipeline.fd[1]);
@@ -74,6 +75,7 @@ void	ft_child_process(t_pipeline pipeline, char *argv, char *envp[],
 	close(pipeline.fd[0]);
 	close(pipeline.fd[1]);
 	execve(pipeline.cmd_path, pipeline.cmd_v, envp);
+	write(2, pipeline.cmd_v[0], ft_strlen(pipeline.cmd_v[0]));
 	free_cmd_pipeline(&pipeline);
 	error_exit("Command exec fail", 'p');
 }
