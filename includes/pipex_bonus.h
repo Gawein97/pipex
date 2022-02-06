@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 17:16:41 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/06 19:26:28 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/06 22:56:43 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,5 @@ char	*ft_st_save(char *save);
 char	*ft_extract(char *save);
 char	*get_next_line(int fd);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+void	error_heredoc(char *str, char c);
 #endif

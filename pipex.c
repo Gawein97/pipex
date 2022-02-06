@@ -6,33 +6,11 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 19:59:20 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/06 19:55:16 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/06 22:59:33 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/pipex.h"
-
-// void	free_arrays(char **arr)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (arr[i])
-// 	{
-// 		free(arr[i]);
-// 		i++;
-// 	}
-// 	free(arr);
-// 	return ;
-// }
-
-// void	free_cmd_pipeline(t_pipeline *pipeline)
-// {
-// 	free(pipeline->cmd_path);
-// 	free_arrays(pipeline->p_paths);
-// 	free_arrays(pipeline->cmd_v);
-// 	return ;
-// }
 
 static void	ft_i_hate_norm_dup(int fd1, int fd2)
 {
@@ -40,16 +18,6 @@ static void	ft_i_hate_norm_dup(int fd1, int fd2)
 	dup2(fd2, STDOUT_FILENO);
 	return ;
 }
-
-// // depending on the char writes message with errno or without
-// void	error_exit(char *msg, char c)
-// {
-// 	if (c == 'p')
-// 		perror(msg);
-// 	else if (c == 'w')
-// 		write(2, msg, ft_strlen(msg));
-// 	exit(1);
-// }
 
 void	ft_child_process(t_pipeline pipeline, char *argv, char *envp[],
 			char flag)
