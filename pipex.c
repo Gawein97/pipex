@@ -6,7 +6,7 @@
 /*   By: inightin <inightin@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/29 19:59:20 by inightin          #+#    #+#             */
-/*   Updated: 2022/02/06 22:59:33 by inightin         ###   ########.fr       */
+/*   Updated: 2022/02/07 21:14:36 by inightin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,11 @@ void	ft_child_process(t_pipeline pipeline, char *argv, char *envp[],
 			char flag)
 {
 	pipeline.cmd_v = ft_split(argv, ' ');
-	if (!pipeline.cmd_v)
+	if (!pipeline.cmd_v || pipeline.cmd_v[0] == '\0')
 	{
 		free_arrays(pipeline.cmd_v);
 		free_arrays(pipeline.p_paths);
-		error_exit("Mem alloc fail\n", 'w');
+		error_exit("Command fail:\n", 'w');
 	}
 	pipeline.cmd_path = get_cmd_path(pipeline.p_paths, pipeline.cmd_v[0]);
 	if (!pipeline.cmd_path)
