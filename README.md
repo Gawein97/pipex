@@ -8,5 +8,5 @@ Bonus part - multiple pipe handling.
 
 ----
 ## how to use
-1. Build project with cmd $>make
+1. Build project with bash$>make
 2. run "**bash$>./pipex file1 cmd1 cmd2 file2**" wich is equivalent for "**bash$> < file cmd1 | cmd2 > file2**"
